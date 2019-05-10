@@ -8,6 +8,7 @@ catkin_simple()
 # error terms (+python export)
 ##################################
 cs_add_library(${PROJECT_NAME}_errorterms
+  src/EuclideanError.cpp
   src/GyroscopeError.cpp
   src/AccelerometerError.cpp
 )
@@ -20,13 +21,17 @@ target_link_libraries(${PROJECT_NAME}_errorterms_python ${PROJECT_NAME}_errorter
 ##################################
 # tests
 ##################################
-add_definitions(-DGTEST_USE_OWN_TR1_TUPLE=0)
+if(CATKIN_ENABLE_TESTING)
 
-catkin_add_gtest(${PROJECT_NAME}_test
-  test/test_main.cpp
-  test/TestErrorTerms.cpp
-  )
-target_link_libraries(${PROJECT_NAME}_test ${PROJECT_NAME})
+  add_definitions(-DGTEST_USE_OWN_TR1_TUPLE=0)
+
+  catkin_add_gtest(${PROJECT_NAME}_test
+    test/test_main.cpp
+    test/TestErrorTerms.cpp
+    )
+  target_link_libraries(${PROJECT_NAME}_test ${PROJECT_NAME}_errorterms)
+
+endif()
 
 ##################################
 # EXPORT

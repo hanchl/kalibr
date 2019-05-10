@@ -305,9 +305,9 @@ bool PinholeProjection<DISTORTION_T>::keypointToHomogeneous(
   EIGEN_STATIC_ASSERT_MATRIX_SPECIFIC_SIZE_OR_DYNAMIC(
       Eigen::MatrixBase<DERIVED_JK>, 4, 2);
 
-  Eigen::MatrixBase<DERIVED_JK> & Jk =
-      const_cast<Eigen::MatrixBase<DERIVED_JK> &>(outJk);
-  Jk.derived().resize(2, 4);
+  Eigen::MatrixBase<DERIVED_JK> & Jk = const_cast<Eigen::MatrixBase<DERIVED_JK> &>(outJk);
+
+  Jk.derived().resize(4, 2);
   Jk.setZero();
 
   Eigen::MatrixBase<DERIVED_P> & p =
@@ -835,7 +835,7 @@ bool PinholeProjection<DISTORTION_T>::estimateTransformation(
     Eigen::Vector3d backProjection;
 
     if (keypointToEuclidean(imagePoint, backProjection)
-        && backProjection[2] > 0.0) {
+        && backProjection.normalized()[2] > std::cos(80.0*M_PI/180.0)) {
       double x = backProjection[0];
       double y = backProjection[1];
       double z = backProjection[2];

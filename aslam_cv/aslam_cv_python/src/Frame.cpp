@@ -178,8 +178,15 @@ void exportFrame() {
   aslam::python::exportFrame<PinholeRsCameraGeometry>("PinholeRsFrame");
   aslam::python::exportFrame<DistortedPinholeRsCameraGeometry>(
       "DistortedPinholeRsFrame");
+  aslam::python::exportFrame<EquidistantDistortedPinholeRsCameraGeometry>(
+      "EquidistantPinholeRsFrame");
+  aslam::python::exportFrame<DistortedOmniRsCameraGeometry>("DistortedOmniRsFrame");
 
   //aslam::python::exportCovarianceReprojectionError<DistortedPinholeRsCameraGeometry>("DistortedPinholeRsFrameCovarianceReprojectionError");
+
+  aslam::python::exportFrame<ExtendedUnifiedCameraGeometry>("ExtendedUnifiedFrame");
+
+  aslam::python::exportFrame<DoubleSphereCameraGeometry>("DoubleSphereFrame");
 
   aslam::python::exportFrame<OmniCameraGeometry>("OmniFrame");
   aslam::python::exportFrame<DistortedOmniCameraGeometry>("DistortedOmniFrame");

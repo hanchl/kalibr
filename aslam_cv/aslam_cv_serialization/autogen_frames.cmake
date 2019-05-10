@@ -3,9 +3,12 @@ SET( AUTOGEN_FRAME_CPP_FILES
 	src/autogen/Frame-PinholeCameraGeometry.cpp
 	src/autogen/Frame-DistortedPinholeCameraGeometry.cpp
 	src/autogen/Frame-EquidistantDistortedPinholeCameraGeometry.cpp
+	src/autogen/Frame-FovDistortedPinholeCameraGeometry.cpp
 	src/autogen/Frame-OmniCameraGeometry.cpp
 	src/autogen/Frame-DistortedOmniCameraGeometry.cpp
 	src/autogen/Frame-EquidistantDistortedOmniCameraGeometry.cpp
+	src/autogen/Frame-ExtendedUnifiedCameraGeometry.cpp
+	src/autogen/Frame-DoubleSphereCameraGeometry.cpp
 	src/autogen/Frame-PinholeRsCameraGeometry.cpp
 	src/autogen/Frame-DistortedPinholeRsCameraGeometry.cpp
 	src/autogen/Frame-EquidistantDistortedPinholeRsCameraGeometry.cpp

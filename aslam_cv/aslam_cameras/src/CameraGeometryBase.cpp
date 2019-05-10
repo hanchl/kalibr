@@ -28,6 +28,10 @@ boost::shared_ptr<CameraGeometryBase> CameraGeometryBase::create(
     rval.reset(
         new CameraGeometry<PinholeProjection<EquidistantDistortion>,
             GlobalShutter, NoMask>(config));
+  } else if (type == "FovDistortedPinhole") {
+    rval.reset(
+        new CameraGeometry<PinholeProjection<FovDistortion>,
+            GlobalShutter, NoMask>(config));
   } else if (type == "Omni") {
     rval.reset(
         new CameraGeometry<OmniProjection<NoDistortion>, GlobalShutter, NoMask>(
@@ -40,6 +44,14 @@ boost::shared_ptr<CameraGeometryBase> CameraGeometryBase::create(
     rval.reset(
         new CameraGeometry<OmniProjection<EquidistantDistortion>, GlobalShutter,
             NoMask>(config));
+  } else if (type == "ExtendedUnified") {
+    rval.reset(
+        new CameraGeometry<ExtendedUnifiedProjection<NoDistortion>, GlobalShutter, NoMask>(
+            config));
+  } else if (type == "DoubleSphere") {
+    rval.reset(
+        new CameraGeometry<DoubleSphereProjection<NoDistortion>, GlobalShutter, NoMask>(
+            config));
   } else if (type == "PinholeRs") {
     rval.reset(
         new CameraGeometry<PinholeProjection<NoDistortion>, RollingShutter,

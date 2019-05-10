@@ -81,7 +81,12 @@ class TargetDetector(object):
         targetType = targetConfig.getTargetType()
 
         if targetType == 'checkerboard':
-            options = acv.CheckerboardOptions(); 
+            options = acv.CheckerboardOptions()
+            options.filterQuads = True
+            options.normalizeImage = True
+            options.useAdaptiveThreshold = True        
+            options.performFastCheck = False
+            options.windowWidth = 5            
             options.showExtractionVideo = showCorners
             
             self.grid = acv.GridCalibrationTargetCheckerboard(targetParams['targetRows'], 
@@ -90,17 +95,17 @@ class TargetDetector(object):
                                                               targetParams['colSpacingMeters'], 
                                                               options)
         elif targetType == 'circlegrid':
-            options = acv.CirclegridOptions(); 
-            options.showExtractionVideo = showCorners;
+            options = acv.CirclegridOptions()
+            options.showExtractionVideo = showCorners
             options.useAsymmetricCirclegrid = targetParams['asymmetricGrid']
             
-            selfgrid = acv.GridCalibrationTargetCirclegrid(targetParams['targetRows'],
+            self.grid = acv.GridCalibrationTargetCirclegrid(targetParams['targetRows'],
                                                            targetParams['targetCols'], 
                                                            targetParams['spacingMeters'], 
                                                            options)
          
         elif targetType == 'aprilgrid':
-            options = acv_april.AprilgridOptions();
+            options = acv_april.AprilgridOptions()
             #enforce more than one row --> pnp solution can be bad if all points are almost on a line...
             options.minTagsForValidObs = int( np.max( [targetParams['tagRows'], targetParams['tagCols']] ) + 1 )
             options.showExtractionVideo = showCorners
@@ -651,11 +656,17 @@ def saveChainParametersYaml(cself, resultFile, graph):
     cameraModels = {acvb.DistortedPinhole: 'pinhole',
                     acvb.EquidistantPinhole: 'pinhole',
                     acvb.FovPinhole: 'pinhole',
-                    acvb.DistortedOmni: 'omni'}
+                    acvb.Omni: 'omni',
+                    acvb.DistortedOmni: 'omni',
+                    acvb.ExtendedUnified: 'eucm',
+                    acvb.DoubleSphere: 'ds'}
     distortionModels = {acvb.DistortedPinhole: 'radtan',
                         acvb.EquidistantPinhole: 'equidistant',
                         acvb.FovPinhole: 'fov',
-                        acvb.DistortedOmni: 'radtan'}
+                        acvb.Omni: 'none',
+                        acvb.DistortedOmni: 'radtan',
+                        acvb.ExtendedUnified: 'none',
+                        acvb.DoubleSphere: 'none'}
 
     chain = cr.CameraChainParameters(resultFile, createYaml=True)
     for cam_id, cam in enumerate(cself.cameras):
@@ -672,6 +683,12 @@ def saveChainParametersYaml(cself, resultFile, graph):
             camParams.setIntrinsics(cameraModel, [P.xi(), P.fu(), P.fv(), P.cu(), P.cv()] )
         elif cameraModel == 'pinhole':
             camParams.setIntrinsics(cameraModel, [P.fu(), P.fv(), P.cu(), P.cv()] )
+        elif cameraModel == 'eucm':
+            camParams.setIntrinsics(cameraModel, [P.alpha(), P.beta(), P.fu(), P.fv(), P.cu(), P.cv()] )
+        elif cameraModel == 'ds':
+            camParams.setIntrinsics(cameraModel, [P.xi(), P.alpha(), P.fu(), P.fv(), P.cu(), P.cv()] )
+        else:
+            raise RuntimeError("Invalid camera model {}.".format(cameraModel))
         camParams.setResolution( [P.ru(), P.rv()] )
         dist_coeffs = P.distortion().getParameters().flatten(1)
         camParams.setDistortion( distortionModel, dist_coeffs)
